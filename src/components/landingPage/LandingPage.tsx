@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '../../assets/img/logo.png';
 import './styles.css';
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
   return (
@@ -8,13 +9,9 @@ const LandingPage = () => {
       <header className="App-header">
         <img src={logo} className="app-logo" alt="logo" />
         <p>Welcome to Wildridge Disc Golf!</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer">
-          Learn React
-        </a>
+        <Link className="App-link" to="/new-round">
+          Start a new round!
+        </Link>
       </header>
     </div>
   );
