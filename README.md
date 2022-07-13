@@ -1,1 +1,1 @@
-# wildridge-disco-golf-scorecard
+# Wildridge Disc Golf Scorecard
