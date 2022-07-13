@@ -1,11 +1,12 @@
-// import logo from '../../assets/img/logo.png';
-import './LandingPage.css';
+import React from 'react';
+import logo from '../../assets/img/logo.png';
+import './styles.css';
 
 const LandingPage = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {/*<img src={logo} className="app-logo" alt="logo" />*/}
+        <img src={logo} className="app-logo" alt="logo" />
         <p>Welcome to Wildridge Disc Golf!</p>
         <a
           className="App-link"
