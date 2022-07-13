@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
 import logo from '../../assets/img/logo.png';
 import './styles.css';
-import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
   return (
@@ -10,7 +11,7 @@ const LandingPage = () => {
         <img src={logo} className="app-logo" alt="logo" />
         <p>Welcome to Wildridge Disc Golf!</p>
         <Link className="App-link" to="/new-round">
-          Start a new round!
+          <Button variant="contained">Start a round</Button>
         </Link>
       </header>
     </div>
