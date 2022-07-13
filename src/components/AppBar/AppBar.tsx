@@ -41,7 +41,7 @@ const MyAppBar = () => {
   };
 
   return (
-    <AppBar position="static" style={appBarStyles}>
+    <AppBar position="static" sx={appBarStyles}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <img src={logo} className="app-logo" alt="logo" />
