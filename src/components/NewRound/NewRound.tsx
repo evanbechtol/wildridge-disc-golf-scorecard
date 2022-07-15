@@ -1,7 +1,8 @@
 import './styles.css';
 import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Container } from '@mui/material';
+import { GridColDef } from '@mui/x-data-grid';
+import DesktopLayout from './DesktopLayout/DesktopLayout';
+import MobileLayout from './MobileLayout/MobileLayout';
 
 const NewRound = () => {
   const columns: GridColDef[] = [
@@ -23,7 +24,7 @@ const NewRound = () => {
   const rows = [
     { id: 1, playerName: 'Snow', score: 2 },
     { id: 2, playerName: 'Lannister', score: 3 },
-    { id: 3, playerName: 'Lannister', score: 1 },
+    { id: 3, playerName: 'Ted', score: 1 },
     { id: 4, playerName: 'Stark', score: 4 },
     { id: 5, playerName: 'Targaryen', score: 4 },
     { id: 6, playerName: 'Melisandre', score: 2 },
@@ -33,22 +34,10 @@ const NewRound = () => {
   ];
 
   return (
-    <Container sx={{ display: { xs: 'none', md: 'flex' } }}>
-      <div style={{ height: '500', width: '100%' }}>
-        <div>
-          <DataGrid
-            autoHeight
-            rows={rows}
-            columns={columns}
-            columnBuffer={3}
-            disableColumnSelector={true}
-            disableColumnMenu={true}
-            disableColumnFilter={true}
-            disableSelectionOnClick
-          />
-        </div>
-      </div>
-    </Container>
+    <>
+      <DesktopLayout rows={rows} columns={columns} />
+      <MobileLayout />
+    </>
   );
 };
 
