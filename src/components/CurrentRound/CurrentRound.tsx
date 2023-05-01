@@ -1,85 +1,103 @@
-import { useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { CurrentRoundState, CurrentHoleSelector } from '../../store/atoms/CurrentRoundState';
+import { Link } from 'react-router-dom';
 
-type Score = {
-  playerName: string;
-  holeScores: number[];
-};
+const CurrentRound = () => {
+  const [currentRound, setCurrentRound] = useRecoilState(CurrentRoundState);
+  const currentHole = useRecoilValue(CurrentHoleSelector);
 
-type Props = {
-  players: string[];
-};
+  const handleScoreChange = (playerIndex: number, holeIndex: number, value: string) => {
+    const updatedPlayer = {
+      ...currentRound.players[playerIndex],
+      scores: {
+        ...currentRound.players[playerIndex].score,
+        [holeIndex]: parseInt(value)
+      }
+    };
 
-const CurrentRound = ({ players }: Props) => {
-  const [currentHole, setCurrentHole] = useState(1);
-  const [scores, setScores] = useState<Score[]>(() =>
-    players.map((player) => ({
-      playerName: player,
-      holeScores: Array(18).fill(0)
-    }))
-  );
+    const updatedPlayers = [
+      ...currentRound.players.slice(0, playerIndex),
+      updatedPlayer,
+      ...currentRound.players.slice(playerIndex + 1)
+    ];
 
-  const handleScoreChange = (playerIndex: number, holeIndex: number, value: number) => {
-    const newScores = [...scores];
-    newScores[playerIndex].holeScores[holeIndex] = value;
-    setScores(newScores);
+    setCurrentRound({
+      ...currentRound,
+      players: updatedPlayers
+    });
   };
 
   const handlePreviousHole = () => {
     if (currentHole > 1) {
-      setCurrentHole(currentHole - 1);
+      setCurrentRound({ ...currentRound, currentHole: currentHole - 1 });
     }
   };
 
   const handleNextHole = () => {
     if (currentHole < 18) {
-      setCurrentHole(currentHole + 1);
+      setCurrentRound({ ...currentRound, currentHole: currentHole + 1 });
     } else {
       // Finish round logic
     }
   };
 
+  const handleEndRound = () => {
+    // calculate round results and update state
+    const updatedPlayers = currentRound.players.map((player) => {
+      let totalScore = 0;
+      for (let score of Object.values(player.score)) {
+        totalScore += score;
+      }
+
+      const netScore = totalScore - player.handicap;
+      return {
+        ...player,
+        totalScore,
+        netScore
+      };
+    });
+
+    setCurrentRound({
+      ...currentRound,
+      players: updatedPlayers,
+      isComplete: true
+    });
+  };
+
+  const playersList = currentRound.players.map((player, playerIndex) => {
+    const scoreList = player.score.map((hole, holeIndex) => {
+      const score = player.score[holeIndex] ?? '';
+      return (
+        <input
+          key={`${playerIndex}-${holeIndex}`}
+          type="text"
+          value={score}
+          onChange={(e) => handleScoreChange(playerIndex, holeIndex, e.target.value)}
+        />
+      );
+    });
+  });
+
   return (
     <div>
-      <h2>Current Round - Hole {currentHole}</h2>
-      <div>
-        <button onClick={handlePreviousHole} disabled={currentHole === 1}>
-          Previous hole
-        </button>
-        {currentHole === 18 ? (
-          <button onClick={() => console.log('Finish round!')}>Finish round</button>
-        ) : (
-          <button onClick={handleNextHole}>Next hole</button>
-        )}
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Player</th>
-            {Array(18)
-              .fill(0)
-              .map((_, i) => (
-                <th key={i}>{i + 1}</th>
-              ))}
-          </tr>
-        </thead>
-        <tbody>
-          {scores.map((score, i) => (
-            <tr key={i}>
-              <td>{score.playerName}</td>
-              {score.holeScores.map((holeScore, j) => (
-                <td key={j}>
-                  <input
-                    type="number"
-                    min={1}
-                    value={holeScore}
-                    onChange={(e) => handleScoreChange(i, j, parseInt(e.target.value))}
-                  />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h1>Current Round</h1>
+      <div>Current Hole: {currentHole}</div>
+      <button onClick={handlePreviousHole} disabled={currentHole === 1}>
+        Previous hole
+      </button>
+      <button onClick={handleNextHole} disabled={currentHole === 18}>
+        {currentHole === 17 ? 'Finish round' : 'Next hole'}
+      </button>
+      {currentRound.players.map((player, index) => (
+        <div key={player.playerName}>
+          <div>{player.playerName}</div>
+          <input
+            type="number"
+            value={player.score[currentHole - 1]}
+            onChange={(e) => handleScoreChange(index, holeIndex, e.target.value)}
+          />
+        </div>
+      ))}
     </div>
   );
 };
